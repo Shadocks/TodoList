@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Class Task
+ *
  * @ORM\Entity
  * @ORM\Table
  */
@@ -36,56 +38,108 @@ class Task
     private $content;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="tasks")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     */
+    private $user;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $isDone;
 
+    /**
+     * Task constructor.
+     */
     public function __construct()
     {
         $this->createdAt = new \Datetime();
         $this->isDone = false;
     }
 
-    public function getId()
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getCreatedAt()
+    /**
+     * @return \Datetime
+     */
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
+    /**
+     * @param $createdAt
+     */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
     }
 
-    public function getTitle()
+    /**
+     * @return string
+     */
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * @param $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    public function getContent()
+    /**
+     * @return string
+     */
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
+    /**
+     * @param $content
+     */
     public function setContent($content)
     {
         $this->content = $content;
     }
 
-    public function isDone()
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDone(): bool
     {
         return $this->isDone;
     }
 
+    /**
+     * @param $flag
+     */
     public function toggle($flag)
     {
         $this->isDone = $flag;

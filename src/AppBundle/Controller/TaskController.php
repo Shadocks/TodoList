@@ -6,12 +6,22 @@ use AppBundle\Entity\Task;
 use AppBundle\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class TaskController
+ */
 class TaskController extends Controller
 {
     /**
-     * @Route("/tasks", name="task_list")
+     * @Route(
+     *     "/tasks",
+     *     name="task_list"
+     * )
+     *
+     * @return Response
      */
     public function listAction()
     {
@@ -19,21 +29,27 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/create", name="task_create")
+     * @Route(
+     *     "/tasks/create",
+     *     name="task_create"
+     * )
+     *
+     * @param Request  $request
+     *
+     * @return Response
      */
     public function createAction(Request $request)
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
 
-        $form->handleRequest($request);
+        $user = $this->getUser();
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(TaskType::class, $task)
+                     ->handleRequest($request);
 
-            $em->persist($task);
-            $em->flush();
+        $taskTypeHandler = $this->get('task_type_handler');
 
+        if ($taskTypeHandler->handle($form, $task, $user)) {
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
@@ -43,7 +59,15 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/{id}/edit", name="task_edit")
+     * @Route(
+     *     "/tasks/{id}/edit",
+     *     name="task_edit"
+     * )
+     *
+     * @param Task    $task
+     * @param Request $request
+     *
+     * @return Response
      */
     public function editAction(Task $task, Request $request)
     {
@@ -52,6 +76,7 @@ class TaskController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
@@ -66,7 +91,14 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @Route(
+     *     "/tasks/{id}/toggle",
+     *     name="task_toggle"
+     * )
+     *
+     * @param Task $task
+     *
+     * @return RedirectResponse
      */
     public function toggleTaskAction(Task $task)
     {
@@ -79,7 +111,14 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/{id}/delete", name="task_delete")
+     * @Route(
+     *     "/tasks/{id}/delete",
+     *     name="task_delete"
+     * )
+     *
+     * @param Task $task
+     *
+     * @return RedirectResponse
      */
     public function deleteTaskAction(Task $task)
     {
