@@ -4,11 +4,15 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ * Class User.
+ *
  * @ORM\Table("user")
  * @ORM\Entity
  * @UniqueEntity("email")
@@ -16,9 +20,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class User implements UserInterface
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="uuid")
      */
     private $id;
 
@@ -55,13 +58,14 @@ class User implements UserInterface
      */
     public function __construct()
     {
+        $this->id = Uuid::uuid4();
         $this->tasks = new ArrayCollection();
     }
 
     /**
-     * @return int|null
+     * @return null|UuidInterface
      */
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }

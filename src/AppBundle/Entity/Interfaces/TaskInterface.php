@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\Interfaces;
 
 use AppBundle\Entity\User;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Interface TaskInterface.
@@ -10,9 +11,9 @@ use AppBundle\Entity\User;
 interface TaskInterface
 {
     /**
-     * @return int|null
+     * @return UuidInterface
      */
-    public function getId(): ?int;
+    public function getId(): ?UuidInterface;
 
     /**
      * @return \Datetime
