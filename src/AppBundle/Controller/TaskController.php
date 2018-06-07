@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
+use AppBundle\Form\Type\EditTaskType;
 use AppBundle\Form\Type\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,30 +12,58 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class TaskController
+ * Class TaskController.
  */
 class TaskController extends Controller
 {
     /**
      * @Route(
      *     path="/tasks",
-     *     name="task_list"
+     *     name="task_list",
+     *     methods={"GET"}
      * )
      *
      * @return Response
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render(
+            'task/list.html.twig',
+            [
+                'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')
+                                               ->findBy(['isDone' => 0]),
+            ]
+        );
+    }
+
+    /**
+     * @Route(
+     *     path="/tasks/completed",
+     *     name="task_list_completed",
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response
+     */
+    public function listTaskCompletedAction()
+    {
+        return $this->render(
+            'task/list_completed.html.twig',
+            [
+                'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')
+                                               ->findBy(['isDone' => 1]),
+            ]
+        );
     }
 
     /**
      * @Route(
      *     path="/tasks/create",
-     *     name="task_create"
+     *     name="task_create",
+     *     methods={"GET", "POST"}
      * )
      *
-     * @param Request  $request
+     * @param Request $request
      *
      * @return Response
      */
@@ -59,7 +88,8 @@ class TaskController extends Controller
     /**
      * @Route(
      *     path="/tasks/{id}/edit",
-     *     name="task_edit"
+     *     name="task_edit",
+     *     methods={"GET", "POST"}
      * )
      *
      * @param Task    $task
@@ -69,14 +99,12 @@ class TaskController extends Controller
      */
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(EditTaskType::class, $task)
+                     ->handleRequest($request);
 
-        $form->handleRequest($request);
+        $editTaskTypeHandler = $this->get('edit_task_type_handler');
 
-        if ($form->isValid()) {
-
-            $this->getDoctrine()->getManager()->flush();
-
+        if ($editTaskTypeHandler->handle($form)) {
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
@@ -91,7 +119,8 @@ class TaskController extends Controller
     /**
      * @Route(
      *     path="/tasks/{id}/toggle",
-     *     name="task_toggle"
+     *     name="task_toggle",
+     *     methods={"GET"}
      * )
      *
      * @param Task $task
@@ -103,7 +132,10 @@ class TaskController extends Controller
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $this->addFlash(
+            'success',
+            sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle())
+        );
 
         return $this->redirectToRoute('task_list');
     }
@@ -111,7 +143,8 @@ class TaskController extends Controller
     /**
      * @Route(
      *     path="/tasks/{id}/delete",
-     *     name="task_delete"
+     *     name="task_delete",
+     *     methods={"GET"}
      * )
      *
      * @param Task $task

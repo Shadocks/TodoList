@@ -3,14 +3,15 @@
 namespace AppBundle\Form\Handler;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\Handler\Interfaces\EditUserTypeHandlerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * Class CreateUserTypeHandler.
+ * Class EditUserTypeHandler.
  */
-class CreateUserTypeHandler
+class EditUserTypeHandler implements EditUserTypeHandlerInterface
 {
     /**
      * @var EntityManagerInterface
@@ -38,22 +39,18 @@ class CreateUserTypeHandler
 
     /**
      * @param FormInterface $form
+     * @param User          $user
      *
      * @return bool
      */
-    public function handle(FormInterface $form): bool
+    public function handle(FormInterface $form, User $user): bool
     {
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = new User();
-            $user->setUsername($form->getData()->username);
-            $user->setPassword($form->getData()->password);
-            $user->setEmail($form->getData()->email);
-            $user->setRoles($form->getData()->roles);
+            $user->changeRoles($form->getData()->roles);
 
             $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
-            $this->entityManager->persist($user);
             $this->entityManager->flush();
 
             return true;

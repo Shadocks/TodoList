@@ -2,17 +2,16 @@
 
 namespace AppBundle\Form\Type;
 
-use AppBundle\DTO\Task\NewTaskDTO;
+use AppBundle\Entity\Task;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TaskType.
+ * Class EditTaskType.
  */
-class TaskType extends AbstractType
+class EditTaskType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -32,13 +31,7 @@ class TaskType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => NewTaskDTO::class,
-            'empty_data' => function (FormInterface $form) {
-                return new NewTaskDTO(
-                    $form->get('title')->getData(),
-                    $form->get('content')->getData()
-                );
-            },
+            'data_class' => Task::class
         ]);
     }
 }
