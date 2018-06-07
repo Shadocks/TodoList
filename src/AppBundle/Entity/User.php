@@ -45,61 +45,97 @@ class User implements UserInterface
      */
     private $tasks;
 
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
 
-    public function getId()
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function setUsername($username)
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username)
     {
         $this->username = $username;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSalt()
     {
         return null;
     }
 
-    public function getPassword()
+    /**
+     * {@inheritdoc}
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password)
     {
         $this->password = $password;
     }
 
-    public function getEmail()
+    /**
+     * @return string
+     */
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail($email)
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
 
-    public function getTasks()
+    /**
+     * @return ArrayCollection
+     */
+    public function getTasks(): ArrayCollection
     {
         return $this->tasks;
     }
 
-    public function getRoles()
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoles(): array
     {
-        return array('ROLE_USER');
+        return ['ROLE_USER'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function eraseCredentials()
     {
     }

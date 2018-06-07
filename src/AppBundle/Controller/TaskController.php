@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
-use AppBundle\Form\TaskType;
+use AppBundle\Form\Type\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,7 +17,7 @@ class TaskController extends Controller
 {
     /**
      * @Route(
-     *     "/tasks",
+     *     path="/tasks",
      *     name="task_list"
      * )
      *
@@ -30,7 +30,7 @@ class TaskController extends Controller
 
     /**
      * @Route(
-     *     "/tasks/create",
+     *     path="/tasks/create",
      *     name="task_create"
      * )
      *
@@ -40,16 +40,14 @@ class TaskController extends Controller
      */
     public function createAction(Request $request)
     {
-        $task = new Task();
-
         $user = $this->getUser();
 
-        $form = $this->createForm(TaskType::class, $task)
+        $form = $this->createForm(TaskType::class)
                      ->handleRequest($request);
 
         $taskTypeHandler = $this->get('task_type_handler');
 
-        if ($taskTypeHandler->handle($form, $task, $user)) {
+        if ($taskTypeHandler->handle($form, $user)) {
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
@@ -60,7 +58,7 @@ class TaskController extends Controller
 
     /**
      * @Route(
-     *     "/tasks/{id}/edit",
+     *     path="/tasks/{id}/edit",
      *     name="task_edit"
      * )
      *
@@ -92,7 +90,7 @@ class TaskController extends Controller
 
     /**
      * @Route(
-     *     "/tasks/{id}/toggle",
+     *     path="/tasks/{id}/toggle",
      *     name="task_toggle"
      * )
      *
@@ -112,7 +110,7 @@ class TaskController extends Controller
 
     /**
      * @Route(
-     *     "/tasks/{id}/delete",
+     *     path="/tasks/{id}/delete",
      *     name="task_delete"
      * )
      *

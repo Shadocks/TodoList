@@ -60,7 +60,7 @@ class Task
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -71,14 +71,6 @@ class Task
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
-    }
-
-    /**
-     * @param $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 
     /**

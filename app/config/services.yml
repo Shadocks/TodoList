@@ -4,9 +4,11 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
     task_type_handler:
-        class: AppBundle\Form\Handler\TaskTypeHandler
+        class: AppBundle\Form\Handler\CreateTaskTypeHandler
+        autowire: true
+
+    create_user_type_handler:
+        class: AppBundle\Form\Handler\CreateUserTypeHandler
         autowire: true
