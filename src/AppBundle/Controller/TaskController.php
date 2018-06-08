@@ -129,15 +129,25 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
-        $this->getDoctrine()->getManager()->flush();
+        if (!$task->isDone()){
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash(
-            'success',
-            sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle())
-        );
+            $this->addFlash(
+                'success',
+                sprintf('La tâche "%s" a bien été marquée comme faite.', $task->getTitle())
+            );
+            return $this->redirectToRoute('task_list');
+        } else {
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('task_list');
+            $this->addFlash(
+                'success',
+                sprintf('La tâche "%s" a bien été marquée comme non faite.', $task->getTitle())
+            );
+            return $this->redirectToRoute('task_list_completed');
+        }
     }
 
     /**
@@ -149,16 +159,22 @@ class TaskController extends Controller
      *
      * @param Task $task
      *
-     * @return RedirectResponse
+     * @return RedirectResponse|Response
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
+        if ($task->getUser()->getId() === $this->getUser()->getId()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list');
+        } else {
+            $this->addFlash('failed', 'Vous n\'ête pas autorisé à supprimer cette tâche.');
+
+            return $this->redirectToRoute('homepage');
+        }
     }
 }
