@@ -6,7 +6,6 @@ jobs:
         steps:
             - checkout
             - run: rm -rf var/coverage
-            - run: chmod +x ./var/coverage
             - run: mkdir -p /var/coverage
             - run: sudo apt install -y libsqlite3-dev zlib1g-dev
             - run: sudo docker-php-ext-install zip
