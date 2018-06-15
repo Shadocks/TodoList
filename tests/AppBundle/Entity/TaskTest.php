@@ -5,6 +5,8 @@ namespace tests\Entity;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class TaskTest extends TestCase
 {
@@ -12,9 +14,7 @@ class TaskTest extends TestCase
 
     public function setUp()
     {
-        $this->user = $this->createMock(User::class);
-        $this->user->method('getId')
-                   ->willReturn(1);
+        $this->user = new User();
     }
 
     public function testInstantiation()
@@ -26,11 +26,11 @@ class TaskTest extends TestCase
         $task->setUser($this->user);
         $task->toggle(true);
 
-        static::assertNull($task->getId());
+        static::assertInstanceOf(UuidInterface::class, $task->getId());
         static::assertEquals('Title', $task->getTitle());
         static::assertEquals('Content', $task->getContent());
         static::assertInstanceOf(\DateTime::class, $task->getCreatedAt());
-        static::assertEquals(1, $task->getUser()->getId());
+        static::assertInstanceOf(UuidInterface::class, $task->getUser()->getId());
         static::assertTrue($task->isDone());
     }
 }

@@ -2,19 +2,20 @@
 
 namespace tests\Form;
 
-use AppBundle\DTO\Task\NewTaskDTO;
 use AppBundle\Form\Type\TaskType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class TaskTypeTest extends TypeTestCase
 {
-    public function testDataPass()
+    public function testWithGoodData()
     {
-        $task = new NewTaskDTO('title', 'content');
+        $form = $this->factory->create(TaskType::class);
 
-        $form = $this->factory->create(TaskType::class, $task);
+        $form->submit([
+            'title' => 'title',
+            'content' => 'content'
+        ]);
 
-        static::assertTrue($form->isSynchronized());
-        static::assertInstanceOf(NewTaskDTO::class, $form->getData());
+        static::assertTrue($form->isSubmitted());
     }
 }

@@ -4,20 +4,17 @@ namespace AppBundle\Form\Handler;
 
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Test\TypeTestCase;
 
-class CreateTaskTypeHandlerTest extends KernelTestCase
+class CreateTaskTypeHandlerTest extends TypeTestCase
 {
     private $entityManager;
 
     private $formInterface;
 
-
     public function setUp()
     {
-        static::bootKernel();
-
         $this->entityManager = $this->createMock(EntityManager::class);
         $this->formInterface = $this->createMock(FormInterface::class);
     }
@@ -26,7 +23,10 @@ class CreateTaskTypeHandlerTest extends KernelTestCase
     {
         $taskTypeHandler = new CreateTaskTypeHandler($this->entityManager);
 
-        static::assertInstanceOf(CreateTaskTypeHandler::class, $taskTypeHandler);
+        static::assertInstanceOf(
+            CreateTaskTypeHandler::class,
+            $taskTypeHandler
+        );
     }
 
     public function testHandle()
