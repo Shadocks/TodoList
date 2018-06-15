@@ -48,9 +48,6 @@ class EditUserTypeHandler implements EditUserTypeHandlerInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $user->changeRoles($form->getData()->roles);
 
-            $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
-
             $this->entityManager->flush();
 
             return true;
