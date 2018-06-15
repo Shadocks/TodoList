@@ -35,7 +35,8 @@
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^4.1",
-        "friendsofphp/php-cs-fixer": "v2.4.2"
+        "friendsofphp/php-cs-fixer": "v2.4.2",
+        "symfony/css-selector": "^4.1"
     },
     "scripts": {
         "symfony-scripts": [

@@ -2,19 +2,20 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Task;
 use AppBundle\Form\Type\EditTaskType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class EditTaskTypeTest extends TypeTestCase
 {
-    public function testDataPass()
+    public function testWithGoodData()
     {
-        $task = new Task();
+        $form = $this->factory->create(EditTaskType::class);
 
-        $form = $this->factory->create(EditTaskType::class, $task);
+        $form->submit([
+            'title' => 'title',
+            'content' => 'content'
+        ]);
 
-        static::assertTrue($form->isSynchronized());
-        static::assertInstanceOf(Task::class, $form->getData());
+        static::assertTrue($form->isSubmitted());
     }
 }

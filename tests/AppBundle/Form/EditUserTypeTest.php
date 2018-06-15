@@ -2,19 +2,20 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\DTO\User\EditUserDTO;
+
 use AppBundle\Form\Type\EditUserType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class EditUserTypeTest extends TypeTestCase
 {
-    public function testDataPass()
+    public function testWithGoodData()
     {
-        $user = new EditUserDTO('ROLE_ADMIN');
+        $form = $this->factory->create(EditUserType::class);
 
-        $form = $this->factory->create(EditUserType::class, $user);
+        $form->submit([
+            'roles' => 'ROLE_USER'
+        ]);
 
-        static::assertTrue($form->isSynchronized());
-        static::assertInstanceOf(EditUserDTO::class, $form->getData());
+        static::assertTrue($form->isSubmitted());
     }
 }
