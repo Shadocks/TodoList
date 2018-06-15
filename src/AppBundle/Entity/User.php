@@ -4,11 +4,15 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ * Class User.
+ *
  * @ORM\Table("user")
  * @ORM\Entity
  * @UniqueEntity("email")
@@ -16,9 +20,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class User implements UserInterface
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="uuid")
      */
     private $id;
 
@@ -41,6 +44,11 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @ORM\Column(type="array")
+     */
+    private $roles;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
      */
     private $tasks;
@@ -50,13 +58,14 @@ class User implements UserInterface
      */
     public function __construct()
     {
+        $this->id = Uuid::uuid4();
         $this->tasks = new ArrayCollection();
     }
 
     /**
-     * @return int|null
+     * @return null|UuidInterface
      */
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }
@@ -130,7 +139,24 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        return $this->roles;
+    }
+
+    /**
+     * @param string $roles
+     */
+    public function setRoles(string $roles)
+    {
+        $this->roles[] = $roles;
+    }
+
+    /**
+     * @param string $roles
+     */
+    public function changeRoles(string $roles)
+    {
+        $roles = [$roles];
+        $this->roles = $roles;
     }
 
     /**

@@ -9,6 +9,14 @@ services:
         class: AppBundle\Form\Handler\CreateTaskTypeHandler
         autowire: true
 
+    edit_task_type_handler:
+        class: AppBundle\Form\Handler\EditTaskTypeHandler
+        autowire: true
+
     create_user_type_handler:
         class: AppBundle\Form\Handler\CreateUserTypeHandler
+        autowire: true
+
+    edit_user_type_handler:
+        class: AppBundle\Form\Handler\EditUserTypeHandler
         autowire: true

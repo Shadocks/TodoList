@@ -2,21 +2,23 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Interfaces\TaskInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Task
+ * Class Task.
  *
  * @ORM\Entity
  * @ORM\Table
  */
-class Task
+class Task implements TaskInterface
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="uuid")
      */
     private $id;
 
@@ -53,14 +55,15 @@ class Task
      */
     public function __construct()
     {
+        $this->id = Uuid::uuid4();
         $this->createdAt = new \Datetime();
         $this->isDone = false;
     }
 
     /**
-     * @return int
+     * @return null|UuidInterface
      */
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }

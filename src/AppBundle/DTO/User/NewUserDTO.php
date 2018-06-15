@@ -23,19 +23,27 @@ class NewUserDTO
     public $email;
 
     /**
+     * @var string
+     */
+    public $roles;
+
+    /**
      * NewUserDTO constructor.
      *
      * @param string $username
      * @param string $password
      * @param string $email
+     * @param string $roles
      */
     public function __construct(
         string $username,
         string $password,
-        string $email
+        string $email,
+        string $roles
     ) {
         $this->username = $username;
         $this->password = $password;
         $this->email = $email;
+        $this->roles = $roles;
     }
 }

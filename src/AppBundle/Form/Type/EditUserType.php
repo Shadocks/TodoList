@@ -2,17 +2,17 @@
 
 namespace AppBundle\Form\Type;
 
-use AppBundle\DTO\Task\NewTaskDTO;
+use AppBundle\DTO\User\EditUserDTO;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TaskType.
+ * Class EditUserType.
  */
-class TaskType extends AbstractType
+class EditUserType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -21,9 +21,12 @@ class TaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
-            ->add('content', TextareaType::class)
-        ;
+            ->add('roles', ChoiceType::class, [
+                'choices' => [
+                    'Utilisateur' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN',
+                ],
+            ]);
     }
 
     /**
@@ -32,11 +35,10 @@ class TaskType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => NewTaskDTO::class,
+            'data_class' => EditUserDTO::class,
             'empty_data' => function (FormInterface $form) {
-                return new NewTaskDTO(
-                    $form->get('title')->getData(),
-                    $form->get('content')->getData()
+                return new EditUserDTO(
+                    $form->get('roles')->getData()
                 );
             },
         ]);
