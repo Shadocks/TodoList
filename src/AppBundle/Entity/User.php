@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,51 +40,102 @@ class User implements UserInterface
      */
     private $email;
 
-    public function getId()
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
+     */
+    private $tasks;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function setUsername($username)
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username)
     {
         $this->username = $username;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSalt()
     {
         return null;
     }
 
-    public function getPassword()
+    /**
+     * {@inheritdoc}
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password)
     {
         $this->password = $password;
     }
 
-    public function getEmail()
+    /**
+     * @return string
+     */
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail($email)
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
 
-    public function getRoles()
+    /**
+     * @return ArrayCollection
+     */
+    public function getTasks(): ArrayCollection
     {
-        return array('ROLE_USER');
+        return $this->tasks;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function eraseCredentials()
     {
     }
