@@ -1,6 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block header_title %}<h1>Modifier <strong>{{ user.username }}</strong></h1>{% endblock %}
+{% block header_title %}
+
+    <h1>Modifier le rôle de <strong>{{ user.username }}</strong></h1>
+    <p>Actuellement disposant d'un rôle
+
+        {% if user.roles[0] == 'ROLE_ADMIN' %}
+            administrateur
+        {% elseif user.roles[0] == 'ROLE_USER' %}
+            utilisateur
+        {% endif %}</p>
+
+{% endblock %}
+
 {% block header_img %}{% endblock %}
 
 {% block body %}

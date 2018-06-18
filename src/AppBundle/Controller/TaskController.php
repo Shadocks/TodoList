@@ -3,37 +3,80 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
-use AppBundle\Form\TaskType;
+use AppBundle\Form\Type\EditTaskType;
+use AppBundle\Form\Type\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class TaskController.
+ */
 class TaskController extends Controller
 {
     /**
-     * @Route("/tasks", name="task_list")
+     * @Route(
+     *     path="/tasks",
+     *     name="task_list",
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render(
+            'task/list.html.twig',
+            [
+                'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')
+                                               ->findBy(['isDone' => 0]),
+            ]
+        );
     }
 
     /**
-     * @Route("/tasks/create", name="task_create")
+     * @Route(
+     *     path="/tasks/completed",
+     *     name="task_list_completed",
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response
+     */
+    public function listTaskCompletedAction()
+    {
+        return $this->render(
+            'task/list_completed.html.twig',
+            [
+                'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')
+                                               ->findBy(['isDone' => 1]),
+            ]
+        );
+    }
+
+    /**
+     * @Route(
+     *     path="/tasks/create",
+     *     name="task_create",
+     *     methods={"GET", "POST"}
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function createAction(Request $request)
     {
-        $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
+        $user = $this->getUser();
 
-        $form->handleRequest($request);
+        $form = $this->createForm(TaskType::class)
+                     ->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        $taskTypeHandler = $this->get('task_type_handler');
 
-            $em->persist($task);
-            $em->flush();
-
+        if ($taskTypeHandler->handle($form, $user)) {
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
@@ -43,17 +86,25 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/{id}/edit", name="task_edit")
+     * @Route(
+     *     path="/tasks/{id}/edit",
+     *     name="task_edit",
+     *     methods={"GET", "POST"}
+     * )
+     *
+     * @param Task    $task
+     * @param Request $request
+     *
+     * @return Response
      */
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(EditTaskType::class, $task)
+                     ->handleRequest($request);
 
-        $form->handleRequest($request);
+        $editTaskTypeHandler = $this->get('edit_task_type_handler');
 
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
+        if ($editTaskTypeHandler->handle($form)) {
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
@@ -66,29 +117,64 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @Route(
+     *     path="/tasks/{id}/toggle",
+     *     name="task_toggle",
+     *     methods={"GET"}
+     * )
+     *
+     * @param Task $task
+     *
+     * @return RedirectResponse
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
-        $this->getDoctrine()->getManager()->flush();
+        if (!$task->isDone()){
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+            $this->addFlash(
+                'success',
+                sprintf('La tâche "%s" a bien été marquée comme faite.', $task->getTitle())
+            );
+            return $this->redirectToRoute('task_list');
+        } else {
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('task_list');
+            $this->addFlash(
+                'success',
+                sprintf('La tâche "%s" a bien été marquée comme non faite.', $task->getTitle())
+            );
+            return $this->redirectToRoute('task_list_completed');
+        }
     }
 
     /**
-     * @Route("/tasks/{id}/delete", name="task_delete")
+     * @Route(
+     *     path="/tasks/{id}/delete",
+     *     name="task_delete",
+     *     methods={"GET"}
+     * )
+     *
+     * @param Task $task
+     *
+     * @return RedirectResponse|Response
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
+        if ($task->getUser()->getId() === $this->getUser()->getId()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list');
+        } else {
+            $this->addFlash('failed', 'Vous n\'ête pas autorisé à supprimer cette tâche.');
+
+            return $this->redirectToRoute('homepage');
+        }
     }
 }
