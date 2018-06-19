@@ -29,7 +29,7 @@ Run command `vendor/bin/simple-phpunit --coverage-html var/coverage`.
 
 Each commit message consists of a **header**, a **body** and a **footer**. The header has a special format that includes a **type**, a **scope** and a **subject**:
 ```
-<type>(<scope>): <subject>
+<type>: <subject>
 <BLANK LINE>
 <body>
 <BLANK LINE>
@@ -37,6 +37,41 @@ Each commit message consists of a **header**, a **body** and a **footer**. The h
 ```
 Insert a line break : `Maj+enter`
 
-The **header** is mandatory and the **scope** of the header is optional.
-
 Sample:
+```
+bug: response header 201 not location key
+
+Update project dependencies
+The empty cache and a change of environment (prod to dev)
+Add onKernelResponse method to UserSubscriber.php
+
+Closes #12
+```
+
+### Type
+Must be one of the following:
+
+- **build**: Changes that affect the build system or external dependencies
+- **docs**: Documentation only changes
+- **feat**: A new feature
+- **fix**: A bug fix
+- **perf**: A code change that improves performance
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- **test**: Adding missing tests or correcting existing tests
+
+### Subject
+The subject contains a succinct description of the change:
+
+- don't capitalize the first letter
+- no dot (.) at the end
+
+### Body
+The body should include the motivation for the change and contrast this with previous behavior.
+
+### Footer
+The footer should reference the GitHub problems that this commit closes or if the issue is in progress and it is an intermediate commit mark: `In progress #12`.
+
+#
+
+The TodoList team thanks you in advance for your future contributions. If you do not have an immediate response, do not worry, we may be busy at the time of your request. In a normal context we respond within 5 days.
