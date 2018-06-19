@@ -68,3 +68,7 @@ Execute :
 - `doctrine:database:create` Creates the configured datatbase
 - `doctrine:schema:validate` Validate the mapping files
 - `doctrine:schema:create` Executes the SQL needed to generate the database schema
+
+## Contributing
+Want to file a bug, contribute some code, or improve documentation? Excellent! Read up on our guidelines for contributing. [This is here](https://github.com/Shadocks/TodoList/blob/master/CONTRIBUTING.md)
+
