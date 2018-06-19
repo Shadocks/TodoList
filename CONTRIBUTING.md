@@ -72,6 +72,16 @@ The body should include the motivation for the change and contrast this with pre
 ### Footer
 The footer should reference the GitHub problems that this commit closes or if the issue is in progress and it is an intermediate commit mark: `In progress #12`.
 
+## Good practices
+Try to respect as much as possible the good practices put in places.
+
+The todolist project uses php.cs.fixer to ensure PSR compliance.
+It also uses CodeClimate as well as Codacy to have a quality code.
+
+### Analyses static
+[Phpmetrics](https://github.com/phpmetrics/PhpMetrics) also provides metrics for the entire project as well as classes.
+[Deptrac](https://github.com/sensiolabs-de/deptrac) apply rules for dependencies between different classes and check if they are not violated
+
 #
 
 The TodoList team thanks you in advance for your future contributions. If you do not have an immediate response, do not worry, we may be busy at the time of your request. In a normal context we respond within 5 days.
